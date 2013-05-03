@@ -1,11 +1,6 @@
 package feaisil.raceforthegalaxy.card.power;
 
-import feaisil.raceforthegalaxy.card.Card;
-import feaisil.raceforthegalaxy.exception.InactiveGameException;
-import feaisil.raceforthegalaxy.exception.PlayerNotInGameException;
-import feaisil.raceforthegalaxy.game.Game;
 import feaisil.raceforthegalaxy.game.Phase;
-import feaisil.raceforthegalaxy.game.Player;
 
 public final class GainVP extends Power {
 
@@ -22,11 +17,7 @@ public final class GainVP extends Power {
 		super(iPhase);
 		number = iNumber;
 	}
-
-	@Override
-	public void trigger(Game iGame, Player iPlayer, Card iCard)
-	{
-		iGame.drawVP(iPlayer, number);
+	public int getNumber() {
+		return number;
 	}
-
 }

@@ -1,11 +1,7 @@
 package feaisil.raceforthegalaxy.game;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,7 +17,6 @@ import feaisil.raceforthegalaxy.card.Card;
 import feaisil.raceforthegalaxy.card.CardList;
 import feaisil.raceforthegalaxy.card.power.ChooseActionLast;
 import feaisil.raceforthegalaxy.card.power.IncreaseBoardLimit;
-import feaisil.raceforthegalaxy.card.power.Power;
 import feaisil.raceforthegalaxy.exception.*;
 import feaisil.raceforthegalaxy.goal.Goal;
 
@@ -159,7 +154,7 @@ public final class Game implements Serializable{
 	 * Check if a given phase has been chosen by a player,
 	 * verifies that a player has selected a corresponding action.
 	 */
-	private boolean isPhasePlayed(final Phase iPhase)
+	private boolean isPhasePlayed(Phase iPhase)
 	{
 		switch(iPhase)
 		{
@@ -249,7 +244,7 @@ public final class Game implements Serializable{
 	private void executeSelectAction(){
 		Player playerChoosingActionLater = null;
 		for(Player p : players){
-			if(p.hasPower(ChooseActionLast.class.getName()))
+			if(p.hasPower(ChooseActionLast.class))
 				playerChoosingActionLater = p;
 			else
 				p.executeSelectAction();
@@ -264,8 +259,13 @@ public final class Game implements Serializable{
 	}
 		
 	private void executeExplore() {
-		// TODO Auto-generated method stub
-		
+		if(isPhasePlayed(Phase.explore))
+		{
+			for(Player p : players)
+			{
+				p.executeExplore();
+			}
+		}
 	}
 		
 	private void executeDevelop() {
@@ -293,7 +293,7 @@ public final class Game implements Serializable{
 		{
 			if(p.board.size() >= 12)
 			{
-				if(p.hasPower(IncreaseBoardLimit.class.getName()))
+				if(p.hasPower(IncreaseBoardLimit.class))
 				{
 					if(p.board.size() >= 14)
 					{

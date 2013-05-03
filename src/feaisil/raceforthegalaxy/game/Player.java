@@ -5,9 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import feaisil.raceforthegalaxy.card.Card;
-import feaisil.raceforthegalaxy.card.CardList;
-import feaisil.raceforthegalaxy.exception.ActiveGameException;
-import feaisil.raceforthegalaxy.exception.TooManyPlayersException;
+import feaisil.raceforthegalaxy.card.power.*;
+import feaisil.raceforthegalaxy.exception.*;
 import feaisil.raceforthegalaxy.gui.PlayerUserInterface;
 import feaisil.raceforthegalaxy.gui.QueryType;
 import feaisil.raceforthegalaxy.gui.Warning;
@@ -60,7 +59,7 @@ import feaisil.raceforthegalaxy.gui.Warning;
 		startingWorlds = new ArrayList<Card>(2);
 	}
 	
-// execute starting phase
+//  STARTING
 	protected void executeStartingPhase() {
 		List<Card> reply;
 		// Choose one world
@@ -86,7 +85,7 @@ import feaisil.raceforthegalaxy.gui.Warning;
 		game.discardPile.addAll(reply);
 	}
 
-// execute select action
+//  SELECT 
 	protected void executeSelectAction() {
 		List<Card> reply = queryUi(
 				QueryType.chooseAction,
@@ -115,6 +114,18 @@ import feaisil.raceforthegalaxy.gui.Warning;
 			{
 				if(!prestigeActionUsed)
 				{
+					if( prestigePoints > 0)
+					{
+						prestigePoints --;
+					}
+					else
+					{
+						// Not good...
+						ui.sendWarning(this, Warning.NoPrestigePointsAvailable);
+						executeSelectAction();
+						return;
+					}
+						
 					isPrestige = true;
 					prestigeActionUsed = true;
 				} else 
@@ -152,19 +163,43 @@ import feaisil.raceforthegalaxy.gui.Warning;
 		}
 	}
 
-//	
+//	SEARCH
 	protected void executeSearch() {
 		// TODO Auto-generated method stub
 		
 	}
 		
-//	
+//	EXPLORE
 	protected void executeExplore() {
-		//Card aCard = playerInterface.chooseCardToDiscard(hand);
-		// TODO Auto-generated method stub
+		int numberOfCardToDraw = 2;
+		int numberOfCardToKeep = 1;
+		List<Card> drawnCards = new ArrayList<Card>();
 		
+		if(actionChosen == Action.exploreKeep)
+		{
+			numberOfCardToDraw += 1;
+			numberOfCardToKeep += 1;
+		}
+		else if(actionChosen == Action.exploreDraw)
+		{
+			numberOfCardToDraw += 5;
+		}
+		for(Power power: getPowers(ExploreDrawMoreCards.class))
+		{
+			numberOfCardToDraw += ((ExploreDrawMoreCards)power).getStrength();
+		}
+		for(Power power: getPowers(ExploreKeepMoreCards.class))
+		{
+			numberOfCardToKeep += ((ExploreKeepMoreCards)power).getStrength();
+		}
+		for(int i=0; i<numberOfCardToDraw; i++)
+			drawnCards.add(game.drawCard());
+		
+		drawnCards.removeAll(discardCards(drawnCards, numberOfCardToDraw - numberOfCardToKeep, QueryType.exploreDiscard));
+		
+		hand.addAll(drawnCards);
 	}
-		
+
 //	
 	protected void executeDevelop() {
 		// TODO Auto-generated method stub
@@ -187,6 +222,17 @@ import feaisil.raceforthegalaxy.gui.Warning;
 	protected void executeProduce() {
 		// TODO Auto-generated method stub
 		
+	}
+
+// FINALIZE
+	protected void executeFinalizeTurn() {
+		int handSizeLimit = 10;
+		if(hasPower(IncreaseHandLimit.class))
+			handSizeLimit = 12;
+		if( hand.size() > handSizeLimit)
+		{
+			hand.removeAll(discardCards(hand, hand.size() - handSizeLimit, QueryType.finalizeDiscardHand));			
+		}
 	}
 
 
@@ -252,14 +298,32 @@ import feaisil.raceforthegalaxy.gui.Warning;
 		return isPhaseExecuted;
 	}
 
-	protected boolean hasPower(String iPower) {
+	protected boolean hasPower(Class<? extends Power> iPower) {
 		for(Card aC: board)
 		{
 			return aC.hasPower(iPower);
 		}
 		return false;
 	}
+	
+	private List<Power> getPowers(Class<? extends Power> iPower) {
+		List<Power> result = new ArrayList<Power>();
+		for(Card aC: board)
+		{
+			result.addAll(aC.getPowers(iPower));
+		}
+		return result;
+	}
 
+	private List<Card> discardCards(List<Card> drawnCards, int numberOfCardsToDiscard,
+			QueryType explorediscard) {
+		List<Card> result = queryUi(explorediscard, drawnCards, numberOfCardsToDiscard, numberOfCardsToDiscard);
+
+		game.discardPile.addAll(result);
+		
+		return result;
+	}
+	
 	public int getVictoryPoints() {
 		return victoryPoints;
 	}
@@ -280,7 +344,4 @@ import feaisil.raceforthegalaxy.gui.Warning;
 		return clientId;
 	}
 
-	public void setClientId(String clientId) {
-		this.clientId = clientId;
-	}
 }

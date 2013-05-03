@@ -80,15 +80,26 @@ public class Card {
 		return graphicId;
 	}
 
-	public boolean hasPower(String iPower) {
+	public boolean hasPower(Class<? extends Power> iPower) {
 		for(Power aP: powers)
 		{
-			if(aP.getClass().getName()== iPower)
+			if(aP.getClass() == iPower)
 				return true;
 		}
 		return false;
 	}
 
+	public List<Power> getPowers(Class<? extends Power> iPower)
+	{
+		List<Power> result = new ArrayList<Power>();
+		for(Power aP: powers)
+		{
+			if(aP.getClass() == iPower)
+				result.add(aP);
+		}
+		return result;
+	}
+	
 	@Override
 	public String toString() {
 		return "Card ["

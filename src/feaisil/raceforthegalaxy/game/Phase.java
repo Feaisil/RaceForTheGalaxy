@@ -8,5 +8,6 @@ public enum Phase {
 	develop,
 	settle,
 	consume,
-	produce;
+	produce,
+	finalize;
 }

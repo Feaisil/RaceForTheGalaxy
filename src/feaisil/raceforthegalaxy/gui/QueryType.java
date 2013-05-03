@@ -3,6 +3,7 @@ package feaisil.raceforthegalaxy.gui;
 public enum QueryType {
 	startingPhaseChooseWorld,
 	startingPhaseDiscardHand,
-	chooseAction;
-
+	chooseAction,
+	exploreDiscard,
+	finalizeDiscardHand;
 }
