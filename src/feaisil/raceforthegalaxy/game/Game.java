@@ -106,6 +106,7 @@ public final class Game implements Serializable{
 			executeSettle();
 			executeConsume();
 			executeProduce();
+			executeFinalizeTurn();
 		} while (!isGameEnded());
 	}
 	
@@ -194,8 +195,8 @@ public final class Game implements Serializable{
 		cardList.initFromCsv(cardListFile, expansion);
 				
 		List<Card> blueworld = cardList.getStartingBlueWorlds();
-		List<Card> redworld = cardList.getStartingBlueWorlds();
-		List<Card> world = cardList.getStartingBlueWorlds();
+		List<Card> redworld = cardList.getStartingRedWorlds();
+		List<Card> world = cardList.getStartingWorlds();
 		for(Player p : players){
 			// Draw starting world cards according to parameters
 			if(
@@ -203,12 +204,12 @@ public final class Game implements Serializable{
 					expansion.contains(Expansion.TheBrinkOfWard)||
 					expansion.contains(Expansion.TheGatheringStorm))
 			{
-				p.board.add(blueworld.remove(
+				p.startingWorlds.add(blueworld.remove(
 						randGen.nextInt(blueworld.size())));
-				p.board.add(redworld.remove(
+				p.startingWorlds.add(redworld.remove(
 						randGen.nextInt(redworld.size())));
 			} else {
-				p.board.add(
+				p.startingWorlds.add(
 					world.remove(
 						randGen.nextInt(world.size())));
 			}
@@ -252,12 +253,10 @@ public final class Game implements Serializable{
 		if(playerChoosingActionLater != null)
 			playerChoosingActionLater.executeSelectAction();
 	}
-	
 	private void executeSearch() {
 		// TODO Auto-generated method stub
 		
 	}
-		
 	private void executeExplore() {
 		if(isPhasePlayed(Phase.explore))
 		{
@@ -267,25 +266,39 @@ public final class Game implements Serializable{
 			}
 		}
 	}
-		
-	private void executeDevelop() {
-		// TODO Auto-generated method stub
-		
+	private void executeDevelop()
+	{
+		if(isPhasePlayed(Phase.develop))
+		{
+			for(Player p : players)
+			{
+				p.executeDevelop();
+			}
+		}
 	}
-	
-	private void executeSettle() {
-		// TODO Auto-generated method stub
-		
+	private void executeSettle()
+	{
+		if(isPhasePlayed(Phase.settle))
+		{
+			for(Player p : players)
+			{
+				p.executeDevelop();
+			}
+		}
 	}
-	
 	private void executeConsume() {
 		// TODO Auto-generated method stub
 		
 	}
-	
 	private void executeProduce() {
 		// TODO Auto-generated method stub
 		
+	}
+	private void executeFinalizeTurn() {
+		for(Player p : players)
+		{
+			p.executeFinalizeTurn();
+		}
 	}
 
 	private boolean isGameEnded() {

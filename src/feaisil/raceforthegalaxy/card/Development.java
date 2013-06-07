@@ -20,4 +20,10 @@ public class Development extends Card {
 		super(id, iName, iGraphicId, iCost, iVictoryPoints, iPrestige, iKeywords, iPowers, iEgb);
 	}
 
+  @Override
+  public String toString()
+  {
+    return "Development " + super.toString();
+  }
+
 }

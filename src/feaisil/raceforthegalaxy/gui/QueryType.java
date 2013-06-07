@@ -5,5 +5,9 @@ public enum QueryType {
 	startingPhaseDiscardHand,
 	chooseAction,
 	exploreDiscard,
+	developChoose,
+	developDiscard,
+	settleChoose,
+	settleDiscard,
 	finalizeDiscardHand;
 }

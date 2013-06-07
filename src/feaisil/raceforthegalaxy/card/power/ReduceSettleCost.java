@@ -1,23 +1,27 @@
 package feaisil.raceforthegalaxy.card.power;
 
 import feaisil.raceforthegalaxy.card.GoodType;
-import feaisil.raceforthegalaxy.game.Phase;
 
 public class ReduceSettleCost extends Power {
-	private GoodType type;
-	private int strength;
-	
-	public ReduceSettleCost(GoodType iType, int iStrength) {
-		super(Phase.settle);
-		type = iType;
-		strength = iStrength;
-	}
+  private GoodType type;
+  private int strength;
 
-	public GoodType getType() {
-		return type;
-	}
+  public ReduceSettleCost(GoodType iType, int iStrength) {
+    type = iType;
+    strength = iStrength;
+  }
 
-	public int getStrength() {
-		return strength;
-	}
+  public GoodType getType() {
+    return type;
+  }
+
+  public int getStrength() {
+    return strength;
+  }
+
+  @Override
+  public String toString()
+  {
+    return "ReduceSettleCost [type=" + type + ", strength=" + strength + "]";
+  }
 }

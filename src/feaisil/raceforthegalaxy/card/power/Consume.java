@@ -1,20 +1,17 @@
 package feaisil.raceforthegalaxy.card.power;
 
 import feaisil.raceforthegalaxy.card.GoodType;
-import feaisil.raceforthegalaxy.game.Phase;
 
 public class Consume extends Power {
 	private GoodType goodType;
 	private int numberOfGood;
 	
 	public Consume(GoodType iGoodType, int iNumberOfGood) {
-		super(Phase.consume);
 		
 		this.goodType = iGoodType;
 		numberOfGood = iNumberOfGood;
 	}
 	public Consume(GoodType iGoodType) {
-		super(Phase.consume);
 		
 		this.goodType = iGoodType;
 		numberOfGood = 1;
@@ -26,4 +23,10 @@ public class Consume extends Power {
 	public int getNumberOfGood() {
 		return numberOfGood;
 	}
+  @Override
+  public String toString()
+  {
+    return "Consume [goodType=" + goodType + ", numberOfGood=" + numberOfGood
+        + "]";
+  }
 }
